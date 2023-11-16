@@ -1,8 +1,9 @@
+from docxtpl import DocxTemplate
+from docx2pdf import convert
+import datetime
+import shutil
 import csv
 import os
-import shutil
-import datetime
-from docxtpl import DocxTemplate
 
 class Lecture:
     def __init__(self, name, duration, date):
@@ -32,8 +33,6 @@ if "certificados" in os.listdir():
     shutil.rmtree(base_folder)
     os.mkdir(base_folder)
 
-print(datetime.datetime.now())
-
 with open('attendance.csv', mode='r', encoding="UTF-8") as file:
     next(file)
     csvFile = csv.reader(file)
@@ -55,6 +54,10 @@ with open('attendance.csv', mode='r', encoding="UTF-8") as file:
         documentName = f'./certificados/certificado-de-participacao_{participant.name.replace(" ", "-")}_{lecture.name}'
         document.render(context)
         document.save(f'{documentName}.docx')
+
+        convert(f'{documentName}.docx', f'{documentName}.pdf')
+
+                
 
         
 
