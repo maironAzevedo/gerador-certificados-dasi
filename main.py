@@ -1,5 +1,5 @@
 import csv
-import aspose.words as aw
+import datetime
 from docxtpl import DocxTemplate
 
 class Lecture:
@@ -23,9 +23,9 @@ class Participant:
         return f'Informações do participante {self.name}:\nEmail: {self.email}\nMatrícula: {self.registration}\nCategoria: {self.category}\nHoras concedidas: {self.hoursGranted}'
 
 
-document = DocxTemplate("modelo_certificado_dasi.docx")
+document = DocxTemplate("template.docx")
 
-with open('Presentes - Introdução à Ciência de Dados 19 05 23 - Página1.csv', mode='r', encoding="UTF-8") as file:
+with open('attendance.csv', mode='r', encoding="UTF-8") as file:
     # Ignoring file first line
     next(file)
     csvFile = csv.reader(file)
@@ -39,10 +39,11 @@ with open('Presentes - Introdução à Ciência de Dados 19 05 23 - Página1.csv
             "registration": participant.registration,
             "lectureName": lecture.name,
             "category": participant.category,
-            "hoursGranted": participant.hoursGranted
+            "hoursGranted": participant.hoursGranted,
+            "now": datetime.datetime.now()
         }
 
-        documentName = f'./certificados/certificado-de-participacao-{participant.name.replace(" ", "-")}'
+        documentName = f'./certificados/certificado-de-participacao_{participant.name.replace(" ", "-")}_{lecture.name}'
         document.render(context)
         document.save(f'{documentName}.docx')
 
