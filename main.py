@@ -1,4 +1,6 @@
 import csv
+import os
+import shutil
 import datetime
 from docxtpl import DocxTemplate
 
@@ -24,15 +26,22 @@ class Participant:
 
 
 document = DocxTemplate("template.docx")
+base_folder = "./certificados"
+
+if "certificados" in os.listdir():
+    shutil.rmtree(base_folder)
+    os.mkdir(base_folder)
+
+print(datetime.datetime.now())
 
 with open('attendance.csv', mode='r', encoding="UTF-8") as file:
-    # Ignoring file first line
     next(file)
     csvFile = csv.reader(file)
 
     for line in csvFile:
         lecture = Lecture(line[0], "2h", "19/05/2023")
         participant = Participant(line[1].title().strip(), line[2], line[3], line[4], line[5])
+        time = datetime.datetime.now()
 
         context = {
             "name": participant.name,
@@ -40,7 +49,7 @@ with open('attendance.csv', mode='r', encoding="UTF-8") as file:
             "lectureName": lecture.name,
             "category": participant.category,
             "hoursGranted": participant.hoursGranted,
-            "now": datetime.datetime.now()
+            "now": time
         }
 
         documentName = f'./certificados/certificado-de-participacao_{participant.name.replace(" ", "-")}_{lecture.name}'
